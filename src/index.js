@@ -1,12 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import 'bootstrap/dist/css/bootstrap.css';
+import { createRoot } from "react-dom/client";
+import "bootstrap/dist/css/bootstrap.css";
 
 const data = [
   {
     name: "Baked Salmon",
     ingredients: [
-      { name: "Salmon", amount: 1, measurement: "l lb" },
+      { name: "Salmon", amount: 1, measurement: "lb" },
       { name: "Pine Nuts", amount: 1, measurement: "cup" },
       { name: "Butter Lettuce", amount: 2, measurement: "cups" },
       { name: "Yellow Squash", amount: 1, measurement: "med" },
@@ -25,7 +25,7 @@ const data = [
   {
     name: "Fish Tacos",
     ingredients: [
-      { name: "Whitefish", amount: 1, measurement: "l lb" },
+      { name: "Whitefish", amount: 1, measurement: "lb" },
       { name: "Cheese", amount: 1, measurement: "cup" },
       { name: "Iceberg Lettuce", amount: 2, measurement: "cups" },
       { name: "Tomatoes", amount: 2, measurement: "large" },
@@ -38,39 +38,49 @@ const data = [
     ]
   }
 ];
-const Recipe = ({ name, ingredients, steps }) => {
-  return (
-    <section id={name.toLowerCase().replace(/ /g, "-")}>
-      <h1>{name}</h1>
-      <ul className="ingredients">
-        {ingredients.map((ingredient, i) => (
-          <li key={i}>{ingredient.name}</li>
-        ))}
-      </ul>
-      <section className="instructions">
-        <h2>Cooking Instructions</h2>
-        {steps.map((step, i) => (
-          <p key={i}>{step}</p>
-        ))}
-      </section>
-    </section>
-  );
-};
-const Menu = ({ title, recipes }) => {
-  return (
-    <article>
-      <header>
-        <h1>{title}</h1>
-      </header>
-      <div className="recipes">
-        {recipes.map((recipe, i) => (
-          <Recipe key={i} {...recipe} />
-        ))}
-      </div>
-    </article>
-  );
-};
-ReactDOM.render(
-  <Menu recipes={data} title="Delicious Recipes" />,
-  document.getElementById("root")
+
+// ✅ Recipe Component
+const Recipe = ({ name, ingredients, steps }) => (
+  <section
+    id={name.toLowerCase().replace(/ /g, "-")}
+    className="mb-4 p-3 border rounded shadow-sm bg-light"
+  >
+    <h2 className="mb-3">{name}</h2>
+
+    <h4>Ingredients</h4>
+    <ul className="list-group mb-3">
+      {ingredients.map(({ name, amount, measurement }, i) => (
+        <li key={i} className="list-group-item">
+          {amount} {measurement} {name}
+        </li>
+      ))}
+    </ul>
+
+    <div className="instructions">
+      <h4>Cooking Instructions</h4>
+      {steps.map((step, i) => (
+        <p key={i} className="mb-2">
+          {i + 1}. {step}
+        </p>
+      ))}
+    </div>
+  </section>
 );
+
+// ✅ Menu Component
+const Menu = ({ title, recipes }) => (
+  <article className="container my-4">
+    <header className="mb-4 text-center">
+      <h1>{title}</h1>
+    </header>
+    <div className="recipes">
+      {recipes.map((recipe, i) => (
+        <Recipe key={i} {...recipe} />
+      ))}
+    </div>
+  </article>
+);
+
+// ✅ React 18 render
+const root = createRoot(document.getElementById("root"));
+root.render(<Menu recipes={data} title="Delicious Recipes" />);
